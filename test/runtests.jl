@@ -1,6 +1,5 @@
-using ManifoldAPIs
-using Test
+using SafeTestsets
 
-@testset "ManifoldAPIs.jl" begin
-    # Write your tests here.
-end
+files = filter(f -> f ≠ "runtests.jl", readdir())
+
+include.(files)
