@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ManifoldAPIs = "f524e84d-92ea-4684-8f11-5a9e755e9d2c"
