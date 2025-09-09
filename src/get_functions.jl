@@ -1,8 +1,27 @@
+"""
+    get_market_by_slug(api::AbstractAPI, market_slug)
+
+Returns prediction market information by slug.
+
+# Arguments
+
+- `api::AbstractAPI`: API object 
+- `market_slug`: market descriptor e.g., `supreme-court-rules-trump-tariffs-u` in `https://manifold.markets/QuimLast/supreme-court-rules-trump-tariffs-u`
+"""
 function get_market_by_slug(api::AbstractAPI, market_slug)
     resp = HTTP.request("GET", api.api_url * "/slug/" * "$market_slug")
     return JSON3.read(resp.body)
 end
 
+"""
+    get_all_markets(api::AbstractAPI)
+
+Returns information for 1000 prediction markets. 
+
+# Arguments
+
+- `api::AbstractAPI`: API object 
+"""
 function get_all_markets(api::AbstractAPI)
     resp = HTTP.request("GET", api.api_url * "markets")
     return JSON3.read(resp.body)
@@ -87,7 +106,6 @@ end
 
 Returns a vector of bets or trades for a given market id and/or user. 
 
-
 # Arguments 
 
 - `api::AbstractAPI`: API object 
@@ -143,5 +161,28 @@ function get_bets(api::AbstractAPI;
     config *= order ≠ "" ? "&order=$order" : ""
 
     resp = HTTP.request("GET", api.api_url * "bets?$config")
+    return JSON3.read(resp.body)
+end
+
+"""
+    get_market_price(api::AbstractAPI, market_id)
+
+Returns market price based on market id. 
+
+# Arguments
+
+- `api::AbstractAPI`: API object 
+- `market_id`: unique market id 
+
+# Example 
+
+```julia 
+using ManifoldAPIs
+api = ManifoldAPI()
+get_market_price(api, "9t61v9e7x4")
+```
+"""
+function get_market_price(api::AbstractAPI, market_id)
+    resp = HTTP.request("GET", api.api_url * "market/$market_id/prob")
     return JSON3.read(resp.body)
 end

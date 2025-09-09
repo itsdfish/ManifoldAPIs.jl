@@ -35,7 +35,11 @@ function interpolate(df::SubDataFrame)
     end
     push!(df_new, rows[n_rows])
     new_row = deepcopy(rows[n_rows])
-    new_row.time = unix2datetime(new_row.resolution_time  / 1000)
+    if df.is_resolved[1]
+        new_row.time = unix2datetime(new_row.resolution_time  / 1000)
+    else 
+        new_row.time = unix2datetime(time())
+    end
     push!(df_new, new_row)
     return df_new
 end
