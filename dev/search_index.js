@@ -1,0 +1,3 @@
+var documenterSearchIndex = {"docs":
+[{"location":"#ManifoldAPIs","page":"Home","title":"ManifoldAPIs","text":"","category":"section"},{"location":"","page":"Home","title":"Home","text":"This package allows users to interface with manifold.markets with the Julia programming language. ","category":"page"},{"location":"#Quick-Example","page":"Home","title":"Quick Example","text":"","category":"section"},{"location":"","page":"Home","title":"Home","text":"using ManifoldAPIs\nusing DataFrames \nusing StatsPlots \n\napi = ManifoldAPI()\n\nmarket_slug = \"supreme-court-rules-trump-tariffs-u\"\nmarket = get_market_by_slug(api, market_slug)\nbets = get_bets(api; market_slug)\n\ndf = create_dataframe(market, bets)\nplot_prices(df; size = (800, 400))","category":"page"}]
+}
