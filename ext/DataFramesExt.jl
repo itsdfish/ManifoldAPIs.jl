@@ -1,24 +1,23 @@
-module DataFramesExt 
+module DataFramesExt
 using DataFrames
 using Dates
 using ManifoldAPIs
 import ManifoldAPIs: create_dataframe
 
-function create_dataframe(market, bets; 
+function create_dataframe(market, bets;
     columns = [
         "userId",
         "outcome",
         "amount",
         "shares",
         "answerId",
-        "updatedTime", 
+        "updatedTime",
         "createdTime",
-        "probAfter",
+        "probAfter"
     ]
 )
-    
     _columns = filter(x -> haskey(bets[1], x), columns)
-    if _columns ≠ columns 
+    if _columns ≠ columns
         invalid_keys = setdiff(columns, _columns)
         @warn "Keys $invalid_keys do not exist in bet info"
     end
@@ -35,7 +34,7 @@ function create_dataframe(market, bets;
         df.answer_label .= ""
     end
     df.volume .= market.volume
-    df.url .= market.url 
+    df.url .= market.url
     df.outcome_type .= market.outcomeType
     df.is_resolved .= market.isResolved
     if market.isResolved

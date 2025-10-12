@@ -1,6 +1,15 @@
 abstract type AbstractAPI end
 
-mutable struct ManifoldAPI <: AbstractAPI
+"""
+    ManifoldAPI <: AbstractAPI
+
+Basic object for Manifold API 
+
+# Fields 
+
+- `api_url::String`: base url for API
+"""
+struct ManifoldAPI <: AbstractAPI
     api_url::String
 end
 

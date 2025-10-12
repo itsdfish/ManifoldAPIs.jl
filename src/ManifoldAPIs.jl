@@ -3,8 +3,10 @@ module ManifoldAPIs
 using HTTP
 using JSON3
 
-export create_dataframe
 export ManifoldAPI
+
+export cancel_limit_order
+export create_dataframe
 export get_all_markets
 export get_market_by_slug
 export get_market_price

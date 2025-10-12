@@ -9,8 +9,8 @@ Returns prediction market information by slug.
 - `market_slug`: market descriptor e.g., `supreme-court-rules-trump-tariffs-u` in `https://manifold.markets/QuimLast/supreme-court-rules-trump-tariffs-u`
 """
 function get_market_by_slug(api::AbstractAPI, market_slug)
-    resp = HTTP.request("GET", api.api_url * "/slug/" * "$market_slug")
-    return JSON3.read(resp.body)
+    response = HTTP.request("GET", api.api_url * "/slug/" * "$market_slug")
+    return JSON3.read(response.body)
 end
 
 """
@@ -23,12 +23,13 @@ Returns information for 1000 prediction markets.
 - `api::AbstractAPI`: API object 
 """
 function get_all_markets(api::AbstractAPI)
-    resp = HTTP.request("GET", api.api_url * "markets")
-    return JSON3.read(resp.body)
+    response = HTTP.request("GET", api.api_url * "markets")
+    return JSON3.read(response.body)
 end
 
 """
-    search_markets(api::AbstractAPI;
+    search_markets(
+        api::AbstractAPI;
         search_terms = "",
         sort_by = "most-popular",
         filter_by = "all",
@@ -69,7 +70,8 @@ api = ManifoldAPI()
 search_markets(api; search_terms = "", creator_id = "YGZdZUSFQyM8j2YzPaBqki8NBz23")
 ```
 """
-function search_markets(api::AbstractAPI;
+function search_markets(
+    api::AbstractAPI;
     search_terms = "",
     sort_by = "most-popular",
     filter_by = "all",
@@ -86,8 +88,8 @@ function search_markets(api::AbstractAPI;
     config *= limit ≠ "" ? "&limit=$limit" : ""
     config *= offset ≠ "" ? "&offset=$offset" : ""
     config *= liquidity ≠ "" ? "&liquidity=$liquidity" : ""
-    resp = HTTP.request("GET", api.api_url * "search-markets?$config")
-    return JSON3.read(resp.body)
+    response = HTTP.request("GET", api.api_url * "search-markets?$config")
+    return JSON3.read(response.body)
 end
 
 """
@@ -140,15 +142,14 @@ function get_bets(api::AbstractAPI;
     market_id = "",
     username = "",
     market_slug = "",
-    limit  = "",
-    before  = "",
-    after  = "",
-    before_time  = "",
-    after_time  = "",
-    kinds  = "",
-    order  = "",
+    limit = "",
+    before = "",
+    after = "",
+    before_time = "",
+    after_time = "",
+    kinds = "",
+    order = ""
 )
-
     config = market_id ≠ "" ? "&contractId=$market_id" : ""
     config *= market_slug ≠ "" ? "&contractSlug=$market_slug" : ""
     config *= username ≠ "" ? "&username=$username" : ""
@@ -160,8 +161,8 @@ function get_bets(api::AbstractAPI;
     config *= kinds ≠ "" ? "&kinds=$kinds" : ""
     config *= order ≠ "" ? "&order=$order" : ""
 
-    resp = HTTP.request("GET", api.api_url * "bets?$config")
-    return JSON3.read(resp.body)
+    response = HTTP.request("GET", api.api_url * "bets?$config")
+    return JSON3.read(response.body)
 end
 
 """
@@ -183,6 +184,6 @@ get_market_price(api, "9t61v9e7x4")
 ```
 """
 function get_market_price(api::AbstractAPI, market_id)
-    resp = HTTP.request("GET", api.api_url * "market/$market_id/prob")
-    return JSON3.read(resp.body)
+    response = HTTP.request("GET", api.api_url * "market/$market_id/prob")
+    return JSON3.read(response.body)
 end

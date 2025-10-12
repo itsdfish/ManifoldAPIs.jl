@@ -17,7 +17,7 @@ makedocs(
     ),
     modules = [
         ManifoldAPIs,
-        #Base.get_extension(ManifoldAPIs, :StatsPlotsExt)
+    #Base.get_extension(ManifoldAPIs, :StatsPlotsExt)
     ],
     pages = [
         "Home" => "index.md",

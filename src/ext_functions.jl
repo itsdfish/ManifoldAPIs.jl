@@ -1,2 +1,2 @@
-function create_dataframe end 
+function create_dataframe end
 function plot_prices end
