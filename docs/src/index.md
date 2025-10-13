@@ -4,21 +4,28 @@ CurrentModule = ManifoldAPIs
 
 # ManifoldAPIs
 
-This package allows users to interface with manifold.markets with the Julia programming language. 
+This package allows users to interface with [Manifold](https://manifold.markets/home) through the [API](https://docs.manifold.markets/api) using the Julia programming language. Navigate the panel on the left to find more information.
 
-# Quick Example
+# Installation
 
-```@example quick_example
-using ManifoldAPIs
-using DataFrames 
-using StatsPlots 
+1. Add registry to package manager via
 
-api = ManifoldAPI()
-
-market_slug = "supreme-court-rules-trump-tariffs-u"
-market = get_market_by_slug(api, market_slug)
-bets = get_bets(api; market_slug)
-
-df = create_dataframe(market, bets)
-plot_prices(df; size = (800, 400))
+```julia
+using Pkg
+pkg"registry add https://github.com/itsdfish/Registry.jl"
 ```
+
+2. Add package to environment via 
+
+```julia 
+using Pkg 
+Pkg.add("ManifoldAPIs")
+```
+or via package mode by entering `]` followed by
+
+```julia
+add ManifoldAPIs
+```
+
+
+

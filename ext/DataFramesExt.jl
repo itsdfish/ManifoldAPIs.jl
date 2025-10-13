@@ -4,7 +4,36 @@ using Dates
 using ManifoldAPIs
 import ManifoldAPIs: create_dataframe
 
-function create_dataframe(market, bets;
+"""
+    create_dataframe(
+        market, 
+        bets;
+        columns = [
+            "userId",
+            "outcome",
+            "amount",
+            "shares",
+            "answerId",
+            "updatedTime",
+            "createdTime",
+            "probAfter"
+        ]
+    )
+
+Converts JSON object holding market data to a `DataFrame`.
+
+# Arguments
+
+- `market`: a JSON3 object containing market information
+- `bets`: a JSON3 object containing price history
+
+# Keywords
+
+- `columns`: columns to include in the `DataFrame`. See the function signature above for default columns.
+"""
+function create_dataframe(
+    market, 
+    bets;
     columns = [
         "userId",
         "outcome",

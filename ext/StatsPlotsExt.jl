@@ -4,7 +4,34 @@ using Dates
 import ManifoldAPIs: plot_prices
 using StatsPlots
 
-function plot_prices(df::DataFrame; kwargs...)
+"""
+    plot_prices(df::DataFrame; kwargs...)
+
+# Arguments 
+
+- `df::DataFrame`: a `DataFrame` containing market information and price history 
+
+# Keywords 
+
+- `config...`: optional keyword arguments to modify the plot configuration
+
+# Example 
+
+```julia 
+using ManifoldAPIs
+using DataFrames 
+using StatsPlots 
+
+api = ManifoldAPI()
+market_slug = "supreme-court-rules-trump-tariffs-u"
+market = get_market_by_slug(api, market_slug)
+bets = get_bets(api; market_slug)
+
+df = create_dataframe(market, bets)
+plot_prices(df; size = (800, 400))
+```
+"""
+function plot_prices(df::DataFrame; config...)
     df1 = interpolate(df)
     return @df df1 plot(
         :time,
@@ -13,7 +40,7 @@ function plot_prices(df::DataFrame; kwargs...)
         ylims = (0, 1),
         ylabel = "Price",
         group = :answer_label;
-        kwargs...
+        config...
     )
 end
 

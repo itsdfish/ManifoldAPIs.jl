@@ -1,3 +1,30 @@
+"""
+    Market
+
+An abstract market type.
+"""
+abstract type Market  end
+"""
+    Single <: Market
+
+A market for a single binary outcome. 
+"""
+struct Single <: Market end
+
+"""
+    MultipleLinked <: Market
+
+A set of multiple related market with prices that sum to 1.  
+"""
+struct MultipleLinked <: Market end 
+
+"""
+    MultipleUnlinked <: Market
+
+A set of multiple related market with prices that are `not` required to sum to 1.  
+"""
+struct MultipleUnlinked <: Market end 
+
 abstract type AbstractAPI end
 
 """

@@ -7,6 +7,16 @@ Returns prediction market information by slug.
 
 - `api::AbstractAPI`: API object 
 - `market_slug`: market descriptor e.g., `supreme-court-rules-trump-tariffs-u` in `https://manifold.markets/QuimLast/supreme-court-rules-trump-tariffs-u`
+
+# Example 
+
+```julia
+using ManifoldAPIs
+
+api = ManifoldAPI()
+market_slug = "supreme-court-rules-trump-tariffs-u"
+market = get_market_by_slug(api, market_slug)
+```
 """
 function get_market_by_slug(api::AbstractAPI, market_slug)
     response = HTTP.request("GET", api.api_url * "/slug/" * "$market_slug")
@@ -21,6 +31,15 @@ Returns information for 1000 prediction markets.
 # Arguments
 
 - `api::AbstractAPI`: API object 
+
+# Example 
+
+```julia
+using ManifoldAPIs
+
+api = ManifoldAPI()
+markets = get_all_markets(api)
+```
 """
 function get_all_markets(api::AbstractAPI)
     response = HTTP.request("GET", api.api_url * "markets")
