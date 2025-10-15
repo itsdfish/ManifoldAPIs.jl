@@ -16,11 +16,11 @@ automatically canceled.
 # Arguments
 
 - `api::AbstractAPI`: API object 
-- `market_type`: the market type. Currently `Single` and `MultipleUnlinked` are supported. 
+- `market_type`: the market type. Currently `Single` and `Multiple` are supported. 
 
 # Keywords 
 
-`target_prices`: a vector of target prices for `MultipleUnlinked` markets or a scalar for a `Single` market
+`target_prices`: a vector of target prices for `Multiple` markets or a scalar for a `Single` market
 `max_amount`: the maximum amount of Mana to be spent 
 - `header`: a dictionary or other compliant data structure containing authorization details 
 `market_slug`:
@@ -49,7 +49,7 @@ max_amount = 25
 target_prices = [.9, .8, .7, .6, .5, .4, .3, .2, .1]
 results = buy_shares(
     api,
-    MultipleUnlinked; 
+    Multiple; 
     target_prices,
     max_amount,
     header,
@@ -111,7 +111,7 @@ end
 
 function make_order(
     api,
-    ::Type{<:MultipleUnlinked}; 
+    ::Type{<:Multiple}; 
     target_prices,
     max_amount,
     market_slug,

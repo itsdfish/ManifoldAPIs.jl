@@ -11,19 +11,21 @@ A market for a single binary outcome.
 """
 struct Single <: Market end
 
+abstract type Multiple <: Market end
+
 """
-    MultipleLinked <: Market
+    MultipleLinked <: Multiple
 
 A set of multiple related market with prices that sum to 1.  
 """
-struct MultipleLinked <: Market end 
+struct MultipleLinked <: Multiple end 
 
 """
-    MultipleUnlinked <: Market
+    MultipleUnlinked <: Multiple
 
 A set of multiple related market with prices that are `not` required to sum to 1.  
 """
-struct MultipleUnlinked <: Market end 
+struct MultipleUnlinked <: Multiple end 
 
 abstract type AbstractAPI end
 

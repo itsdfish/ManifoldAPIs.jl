@@ -5,8 +5,7 @@ using JSON3
 
 export ManifoldAPI
 export Market
-export MultipleLinked
-export MultipleUnlinked
+export Multiple
 export Single
 
 export buy_shares
