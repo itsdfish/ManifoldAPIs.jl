@@ -2,10 +2,13 @@ module ManifoldAPIs
 
 using HTTP
 using JSON3
+import Base: schedule
 
 export ManifoldAPI
 export Market
 export Multiple
+export MultipleLinked
+export MultipleUnlinked
 export Single
 
 export buy_shares
@@ -17,6 +20,7 @@ export get_market_price
 export get_bets
 export plot_prices
 export make_bet
+export schedule
 export search_markets
 
 include("structs.jl")

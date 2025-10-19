@@ -1,4 +1,4 @@
-using DataFrames 
+using DataFrames
 using Documenter
 using ManifoldAPIs
 using StatsPlots
@@ -20,12 +20,12 @@ makedocs(
     modules = [
         ManifoldAPIs,
         Base.get_extension(ManifoldAPIs, :DataFramesExt),
-        Base.get_extension(ManifoldAPIs, :StatsPlotsExt),
+        Base.get_extension(ManifoldAPIs, :StatsPlotsExt)
     ],
     pages = [
         "Home" => "index.md",
         "Basic Usage" => "basic_usage.md",
-        "API" => "api.md",
+        "API" => "api.md"
     ]
 )
 

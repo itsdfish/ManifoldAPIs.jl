@@ -8,6 +8,10 @@ ManifoldAPI
 ```@docs
 Market
 ```
+## `Multiple`
+```@docs
+Multiple
+```
 ## `MultipleLinked`
 ```@docs
 MultipleLinked
@@ -72,4 +76,9 @@ plot_prices
 ## `buy_shares`
 ```@docs
 buy_shares
+```
+
+## `schedule`
+```@docs
+schedule
 ```

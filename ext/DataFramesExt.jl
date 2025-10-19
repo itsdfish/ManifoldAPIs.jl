@@ -32,7 +32,7 @@ Converts JSON object holding market data to a `DataFrame`.
 - `columns`: columns to include in the `DataFrame`. See the function signature above for default columns.
 """
 function create_dataframe(
-    market, 
+    market,
     bets;
     columns = [
         "userId",

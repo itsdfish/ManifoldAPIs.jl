@@ -5,7 +5,7 @@
         target_prices,
         max_amount,
         header,
-        market_slug,
+        slug,
         dry_run = false,
     )
 
@@ -23,7 +23,7 @@ automatically canceled.
 `target_prices`: a vector of target prices for `Multiple` markets or a scalar for a `Single` market
 `max_amount`: the maximum amount of Mana to be spent 
 - `header`: a dictionary or other compliant data structure containing authorization details 
-`market_slug`:
+`slug`:
 - `dry_run = false`: if false, executes the order. If true, simulates the execution of an order 
 
 # Example
@@ -44,7 +44,7 @@ header = Dict(
 )
 
 api = ManifoldAPI()
-market_slug = "will-the-sp-500-be-greater-than-or-cqz5Sct5Rg"
+slug = "will-the-sp-500-be-greater-than-or-cqz5Sct5Rg"
 max_amount = 25
 target_prices = [.9, .8, .7, .6, .5, .4, .3, .2, .1]
 results = buy_shares(
@@ -53,30 +53,31 @@ results = buy_shares(
     target_prices,
     max_amount,
     header,
-    market_slug,
+    slug,
     dry_run = true,
 )
 ```
 """
 function buy_shares(
     api,
-    market_type; 
+    market_type;
     target_prices,
     max_amount,
     header,
-    market_slug,
-    dry_run = false,
+    slug,
+    dry_run = false
 )
     responses = []
     can_buy = true
     prev_amount = 0
+    sorted_target_prices = sort_target_prices(api, target_prices, slug)
     while max_amount > 1 && can_buy
         order = make_order(
             api,
-            market_type; 
-            target_prices,
+            market_type;
+            target_prices = sorted_target_prices,
             max_amount,
-            market_slug,
+            slug,
             dry_run,
             header
         )
@@ -91,10 +92,18 @@ function buy_shares(
     return responses
 end
 
+function sort_target_prices(api, target_prices::Dict, slug)
+    market = get_market_by_slug(api, slug)
+    labels = map(x -> x.text, market.answers)
+    return map(x -> target_prices[x], labels)
+end
+
+sort_target_prices(api, target_prices::Vector, slug) = target_prices
+
 function get_question_prices(market)
     n = length(market.answers)
     prices = fill(0.0, n)
-    for i ∈ 1:n 
+    for i ∈ 1:n
         prices[i] = market.answers[i].probability
     end
     return prices
@@ -103,7 +112,7 @@ end
 function get_question_ids(market)
     n = length(market.answers)
     ids = fill("", n)
-    for i ∈ 1:n 
+    for i ∈ 1:n
         ids[i] = market.answers[i].id
     end
     return ids
@@ -111,15 +120,14 @@ end
 
 function make_order(
     api,
-    ::Type{<:Multiple}; 
+    ::Type{<:Multiple};
     target_prices,
     max_amount,
-    market_slug,
+    slug,
     dry_run = false,
     header
 )
-
-    market = get_market_by_slug(api, market_slug)
+    market = get_market_by_slug(api, slug)
     prices = get_question_prices(market)
     question_ids = get_question_ids(market)
     diffs = target_prices .- prices
@@ -128,7 +136,7 @@ function make_order(
 
     outcome = diffs[max_id] > 0 ? "YES" : "NO"
     limit_prob = target_prices[max_id]
-    question_id = question_ids[max_id] 
+    question_id = question_ids[max_id]
 
     order = Dict(
         "contractId" => market.id,
@@ -144,13 +152,21 @@ end
 function compute_expected_values(api, market, target_prices, max_amount; header)
     n = length(market.answers)
     evs = fill(0.0, n)
-    for i ∈ 1:n 
-        evs[i] = compute_expected_value(api, market, i, target_prices[i], max_amount; header)
-    end 
+    for i ∈ 1:n
+        evs[i] =
+            compute_expected_value(api, market, i, target_prices[i], max_amount; header)
+    end
     return evs
 end
 
-function compute_expected_value(api, market, question_idx, optimal_price, max_amount; header)
+function compute_expected_value(
+    api,
+    market,
+    question_idx,
+    optimal_price,
+    max_amount;
+    header
+)
     opt_price = round(optimal_price, digits = 2)
     diff = opt_price - market.answers[question_idx].probability
     outcome = diff > 0 ? "YES" : "NO"
@@ -170,14 +186,13 @@ end
 
 function make_order(
     api,
-    ::Type{<:Single}; 
+    ::Type{<:Single};
     target_prices,
     max_amount,
-    market_slug,
+    slug,
     dry_run = false
 )
-
-    market = get_market_by_slug(api, market_slug)
+    market = get_market_by_slug(api, slug)
     price = market.probability
     diff = target_prices - price
 
@@ -191,4 +206,82 @@ function make_order(
         "limitProb" => round(target_prices, digits = 2)
     )
     return order
+end
+
+"""
+    schedule(
+        api::AbstractAPI; 
+        transact,
+        can_transact,
+        delay = 1, 
+        args_can = (),
+        kwargs_can = (),
+        args = (),
+        kwargs = ()
+    )
+
+Schedules a transaction by calling the function `transact` when the conditions specified in the function `can_transact` are satisfied.
+
+# Arguments
+
+- `api = ManifoldAPI()`: Manifold API object which is passed to `transact` and `can_transact`
+
+# Keywords
+
+- `transact`: a function that executes a transaction. Function signature: `transact(api, args_can...; kwargs_can...)` 
+- `can_transact`: a function that specifies the conditions under which `transact` can be executed. Function signature: `can_transact(api, args_can...; kwargs_can...)` 
+- `delay = 1`: delay in seconds to wait before checking `can_transact`
+- `args_can = ()`: optional arguments for `can_transact`
+- `kwargs_can = ()`: optional keyword arguments for `can_transact`
+- `args = ()`: optional arguments for `transact`
+- `kwargs = ()`: optional keyword arguments for `transact`
+
+# Example 
+
+```julia 
+using Dates 
+using ManifoldAPIs
+
+api = ManifoldAPI()
+
+header = Dict(
+    "Authorization" => "Key authorization_key_here",
+    "Content-Type" => "application/json"
+)
+
+order = Dict(
+    "contractId" => "HtsxyBopv0MSywM0f0Yp",
+    "amount" => 10,
+    "outcome" => "YES",
+    "dryRun" => true
+)
+
+can_transact(api; time) = now() ≥ time
+transact(api; header, order) = make_bet(api, header, order)
+
+@async transaction = schedule(
+    api; 
+    transact,
+    can_transact,
+    kwargs = (; header, order),
+    kwargs_can = (; time = now() + Second(10)),
+)
+```
+"""
+function schedule(
+    api::AbstractAPI;
+    transact,
+    can_transact,
+    delay = 1,
+    args_can = (),
+    kwargs_can = (),
+    args = (),
+    kwargs = ()
+)
+    while true
+        can_transact(api, args_can...; kwargs_can...) ?
+        (return transact(api, args...; kwargs...)) : nothing
+        sleep(delay)
+    end
+    return nothing
 end
