@@ -99,6 +99,7 @@ function sort_target_prices(api, target_prices::Dict, slug)
 end
 
 sort_target_prices(api, target_prices::Vector, slug) = target_prices
+sort_target_prices(api, target_prices::Real, slug) = target_prices
 
 function get_question_prices(market)
     n = length(market.answers)
@@ -163,11 +164,11 @@ function compute_expected_value(
     api,
     market,
     question_idx,
-    optimal_price,
+    target_price,
     max_amount;
     header
 )
-    opt_price = round(optimal_price, digits = 2)
+    opt_price = round(target_price, digits = 2)
     diff = opt_price - market.answers[question_idx].probability
     outcome = diff > 0 ? "YES" : "NO"
     order = Dict(
@@ -190,11 +191,13 @@ function make_order(
     target_prices,
     max_amount,
     slug,
-    dry_run = false
+    dry_run = false,
+    kwargs...
 )
+    opt_price = round(target_prices, digits = 2)
     market = get_market_by_slug(api, slug)
     price = market.probability
-    diff = target_prices - price
+    diff = opt_price - price
 
     outcome = diff > 0 ? "YES" : "NO"
 
@@ -203,7 +206,7 @@ function make_order(
         "amount" => max_amount,
         "outcome" => outcome,
         "dryRun" => dry_run,
-        "limitProb" => round(target_prices, digits = 2)
+        "limitProb" => opt_price
     )
     return order
 end
