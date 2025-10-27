@@ -92,7 +92,7 @@ function buy_shares(
     return responses
 end
 
-function sort_target_prices(api, target_prices::Dict, slug)
+function sort_target_prices(api, target_prices::AbstractDict, slug)
     market = get_market_by_slug(api, slug)
     labels = map(x -> x.text, market.answers)
     return map(x -> target_prices[x], labels)

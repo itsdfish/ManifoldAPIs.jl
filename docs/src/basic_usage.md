@@ -52,3 +52,45 @@ api = ManifoldAPI()
 response = make_bet(api, header, order)
 cancel_limit_order(api, response.betId)
 ```
+
+## Example 3
+
+In this example, we demonstrate how to automate the purchasing of shares with the function `buy_shares`. To use this function, you must specify the market type, the maximum amount you would to spend, and the target prices. The purchases shares from the option(s) with the highest expected value until the target prices are satisfied, or the maximum amount of Mana has been depleted.
+
+```julia
+using ManifoldAPIs
+
+header = Dict(
+    "Authorization" => "Key authorization_key_here",
+    "Content-Type" => "application/json"
+)
+
+api = ManifoldAPI()
+slug = "will-the-sp-500-be-greater-than-or-cqz5Sct5Rg"
+max_amount = 25
+target_prices = [.9, .8, .7, .6, .5, .4, .3, .2, .1]
+results = buy_shares(
+    api,
+    Multiple; 
+    target_prices,
+    max_amount,
+    header,
+    slug,
+    dry_run = false,
+)
+```
+The function `buy_shares` also accepts a dictionary as an input for `target_prices` to ensure that the values are mapped to the correct option in a Multiple Unlinked market based on option label. The keys in the dictionary are the labels of the options in the [market](https://manifold.markets/dfish/will-the-sp-500-be-greater-than-or-cqz5Sct5Rg). The order of entries does not matter.
+
+```julia
+target_prices = [
+    "S&P500 ≥ 7000" => .1
+    "S&P500 ≥ 6200" => .9, 
+    "S&P500 ≥ 6400" => .7, 
+    "S&P500 ≥ 6700" => .4, 
+    "S&P500 ≥ 6800" => .3, 
+    "S&P500 ≥ 6300" => .8, 
+    "S&P500 ≥ 6900" => .2, 
+    "S&P500 ≥ 6500" => .6, 
+    "S&P500 ≥ 6600" => .5, 
+]
+```
